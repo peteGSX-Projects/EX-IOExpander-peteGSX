@@ -130,3 +130,25 @@ void testPullup(bool enable) {
     initialisePins();
   }
 }
+
+void testServo(uint8_t vpin, uint16_t value, uint8_t profile) {
+  if (firstVpin > 0) {
+    USB_SERIAL.println(F("EX-IOExpander has been connected and configured, please disconnect from EX-CommandStation and reboot"));
+  } else if (analogueTesting || inputTesting || outputTesting || pullupTesting) {
+    USB_SERIAL.println(F("Please disable all other testing first"));
+  } else {
+    USB_SERIAL.print(F("Test move servo or dim LED - vpin|physicalPin|value|profile:"));
+    USB_SERIAL.print(vpin);
+    USB_SERIAL.print(F("|"));
+    USB_SERIAL.print(pinMap[vpin].physicalPin);
+    USB_SERIAL.print(F("|"));
+    USB_SERIAL.print(value);
+    USB_SERIAL.print(F("|"));
+    USB_SERIAL.println(profile);
+    if (!setupComplete) {
+      setupComplete = true;
+    }
+    disableWire();
+    writeAnalogue(vpin, value, profile);
+  }
+}
